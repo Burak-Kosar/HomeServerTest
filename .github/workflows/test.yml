@@ -1,0 +1,31 @@
+name: Ev Sunucusu Testi
+
+# Tetikleyici: Kodu ne zaman çalıştırayım?
+# Cevap: 'main' dalına her 'push' yapıldığında.
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  selamlasma:
+    # Kritik Nokta: Bu işi kim yapsın?
+    # Cevap: 'self-hosted' etiketi olan ajan (yani senin evdeki PC).
+    runs-on: self-hosted
+
+    steps:
+    # 1. Adım: Önce GitHub'daki kodu sunucuya çek
+    - name: Kodu Cek (Checkout)
+      uses: actions/checkout@v3
+
+    # 2. Adım: Basit bir komut çalıştır
+    - name: Kimsin Sen?
+      run: |
+        echo "Merhaba Burak! Ben senin evdeki sunucunum."
+        echo "Şu an çalıştığım yer:"
+        pwd
+        echo "İşletim sistemi bilgilerim:"
+        uname -a
+
+    # 3. Adım: RAM durumunu raporla (Senin sunucunda olduğunu kanıtlamak için)
+    - name: RAM Durumu
+      run: free -h
