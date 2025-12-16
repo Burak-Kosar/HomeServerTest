@@ -8,7 +8,7 @@ def hello():
     # Sunucunun adini (hostname) alalim ki hangi makinede oldugumuzu gorelim
     hostname = socket.gethostname()
     return f"""
-    <h1>Tebrikler Burak! 🚀</h1>
+    <h1>Sistem Artik Otomatik Calisiyor!</h1>
     <p>Bu sayfa senin evdeki sunucundan (<b>{hostname}</b>) sunuluyor.</p>
     <p>CI/CD Boru hatti basariyla calisti!</p>
     """
