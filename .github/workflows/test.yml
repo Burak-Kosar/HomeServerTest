@@ -1,31 +1,33 @@
-name: Ev Sunucusu Testi
+name: Gercek Deploy Islemi
 
-# Tetikleyici: Kodu ne zaman çalıştırayım?
-# Cevap: 'main' dalına her 'push' yapıldığında.
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  selamlasma:
-    # Kritik Nokta: Bu işi kim yapsın?
-    # Cevap: 'self-hosted' etiketi olan ajan (yani senin evdeki PC).
-    runs-on: self-hosted
+  deploy:
+    runs-on: self-hosted  # Senin evdeki sunucu
 
     steps:
-    # 1. Adım: Önce GitHub'daki kodu sunucuya çek
-    - name: Kodu Cek (Checkout)
+    # 1. Kodlari GitHub'dan sunucuya cek
+    - name: Kodu Cek
       uses: actions/checkout@v3
 
-    # 2. Adım: Basit bir komut çalıştır
-    - name: Kimsin Sen?
+    # 2. Eski konteyner varsa durdur ve sil (Hata vermesin diye || true ekledik)
+    - name: Temizlik Yap
       run: |
-        echo "Merhaba Burak! Ben senin evdeki sunucunum."
-        echo "Şu an çalıştığım yer:"
-        pwd
-        echo "İşletim sistemi bilgilerim:"
-        uname -a
+        docker stop my-web-app || true
+        docker rm my-web-app || true
 
-    # 3. Adım: RAM durumunu raporla (Senin sunucunda olduğunu kanıtlamak için)
-    - name: RAM Durumu
-      run: free -h
+    # 3. Yeni Docker imajini insa et (Build)
+    - name: Build Al
+      run: docker build -t burak-app:v1 .
+
+    # 4. Yeni uygulamayi ayaga kaldir (Run)
+    - name: Yayina Al (Deploy)
+      run: |
+        docker run -d \
+        --name my-web-app \
+        -p 5050:5000 \
+        --restart always \
+        burak-app:v1
